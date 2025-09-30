@@ -571,7 +571,9 @@ pub fn run() {
                         tauri::WindowEvent::Destroyed => {
                             event_handlers::handle_window_destroyed();
                         }
-                        _ => {}
+                        _ => {
+                            println!("Other window event: {:?}", event);
+                        }
                     }
                 }
             }
