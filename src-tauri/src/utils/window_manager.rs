@@ -1,8 +1,10 @@
 use crate::{
+    config::Config,
     core::handle,
-    logging,
+    logging, logging_error,
     utils::{logging::Type, resolve::window::build_new_window},
 };
+use anyhow::Result;
 use std::future::Future;
 use std::pin::Pin;
 use tauri::{Manager, WebviewWindow, Wry};
@@ -14,6 +16,8 @@ use std::{
     sync::atomic::{AtomicBool, Ordering},
     time::{Duration, Instant},
 };
+#[cfg(target_os = "macos")]
+use tauri::TitleBarStyle;
 
 /// 窗口操作结果
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -362,6 +366,21 @@ impl WindowManager {
 
             match build_new_window() {
                 Ok(_) => {
+                    let perfer_system_titlebar = {
+                        Config::verge()
+                            .await
+                            .latest_ref()
+                            .prefer_system_titlebar
+                            .unwrap_or_default()
+                    };
+                    println!("prefer_system_titlebar: {}", perfer_system_titlebar);
+                    if !perfer_system_titlebar {
+                        logging_error!(
+                            Type::Window,
+                            true,
+                            Self::prefer_system_titlebar(perfer_system_titlebar)
+                        );
+                    }
                     logging!(info, Type::Window, true, "新窗口创建成功");
                 }
                 Err(e) => {
@@ -406,5 +425,22 @@ impl WindowManager {
         format!(
             "窗口状态: {state:?} | 可见: {is_visible} | 有焦点: {is_focused} | 最小化: {is_minimized}"
         )
+    }
+
+    pub fn prefer_system_titlebar(prefer: bool) -> Result<()> {
+        if let Some(window) = Self::get_main_window() {
+            #[cfg(target_os = "macos")]
+            {
+                let style = if prefer {
+                    TitleBarStyle::Visible
+                } else {
+                    TitleBarStyle::Transparent
+                };
+                logging_error!(Type::Window, true, window.set_title_bar_style(style));
+            }
+
+            window.set_decorations(prefer)?;
+        }
+        Ok(())
     }
 }

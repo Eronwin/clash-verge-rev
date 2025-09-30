@@ -1,12 +1,12 @@
 import {
-  List,
+  Box,
   Button,
-  Select,
-  MenuItem,
-  styled,
+  List,
   ListItem,
   ListItemText,
-  Box,
+  MenuItem,
+  Select,
+  styled,
 } from "@mui/material";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { join } from "@tauri-apps/api/path";
@@ -108,6 +108,20 @@ export const LayoutViewer = forwardRef<DialogRef>((props, ref) => {
       onCancel={() => setOpen(false)}
     >
       <List>
+        <Item>
+          <ListItemText primary={t("Prefer System Titlebar")} />
+          <GuardState
+            value={verge?.prefer_system_titlebar ?? true}
+            valueProps="checked"
+            onCatch={onError}
+            onFormat={onSwitchFormat}
+            onChange={(e) => onChangeData({ prefer_system_titlebar: e })}
+            onGuard={(e) => patchVerge({ prefer_system_titlebar: e })}
+          >
+            <Switch edge="end" />
+          </GuardState>
+        </Item>
+
         <Item>
           <ListItemText primary={t("Traffic Graph")} />
           <GuardState
