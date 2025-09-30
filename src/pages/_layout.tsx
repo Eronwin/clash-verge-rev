@@ -498,35 +498,6 @@ const Layout = () => {
     >
       <ThemeProvider theme={theme}>
         {/* 左侧底部窗口控制按钮 */}
-        {verge?.prefer_system_titlebar ? null : OS === "macos" ? (
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              justifyContent: "flex-start",
-              marginTop: 10,
-              marginBottom: 10,
-              marginLeft: 10,
-            }}
-            data-tauri-drag-region="true"
-          >
-            <WindowControls />
-          </div>
-        ) : (
-          <div
-            style={{
-              position: "absolute",
-              top: 10,
-              right: 10,
-              zIndex: 10,
-              display: "flex",
-              justifyContent: "flex-end",
-            }}
-            data-tauri-drag-region="true"
-          >
-            <WindowControls />
-          </div>
-        )}
         <NoticeManager />
         <div
           style={{
@@ -573,54 +544,61 @@ const Layout = () => {
               : {},
           ]}
         >
-          <div className="layout__left">
-            <div className="the-logo" data-tauri-drag-region="false">
-              <div
-                data-tauri-drag-region="true"
-                style={{
-                  height: "27px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <SvgIcon
-                  component={isDark ? iconDark : iconLight}
+          {verge?.prefer_system_titlebar ? null : (
+            <div className="the_titlebar" data-tauri-drag-region="true">
+              <WindowControls />
+            </div>
+          )}
+
+          <div className="layout-content">
+            <div className="layout-content__left">
+              <div className="the-logo" data-tauri-drag-region="false">
+                <div
+                  data-tauri-drag-region="true"
                   style={{
-                    height: "36px",
-                    width: "36px",
-                    marginTop: "-3px",
-                    marginRight: "5px",
-                    marginLeft: "-3px",
+                    height: "27px",
+                    display: "flex",
+                    justifyContent: "space-between",
                   }}
-                  inheritViewBox
-                />
-                <LogoSvg fill={isDark ? "white" : "black"} />
-              </div>
-              <UpdateButton className="the-newbtn" />
-            </div>
-
-            <List className="the-menu">
-              {routers.map((router) => (
-                <LayoutItem
-                  key={router.label}
-                  to={router.path}
-                  icon={router.icon}
                 >
-                  {t(router.label)}
-                </LayoutItem>
-              ))}
-            </List>
+                  <SvgIcon
+                    component={isDark ? iconDark : iconLight}
+                    style={{
+                      height: "36px",
+                      width: "36px",
+                      marginTop: "-3px",
+                      marginRight: "5px",
+                      marginLeft: "-3px",
+                    }}
+                    inheritViewBox
+                  />
+                  <LogoSvg fill={isDark ? "white" : "black"} />
+                </div>
+                <UpdateButton className="the-newbtn" />
+              </div>
 
-            <div className="the-traffic">
-              <LayoutTraffic />
+              <List className="the-menu">
+                {routers.map((router) => (
+                  <LayoutItem
+                    key={router.label}
+                    to={router.path}
+                    icon={router.icon}
+                  >
+                    {t(router.label)}
+                  </LayoutItem>
+                ))}
+              </List>
+
+              <div className="the-traffic">
+                <LayoutTraffic />
+              </div>
             </div>
-          </div>
 
-          <div className="layout__right">
-            <div className="the-bar"></div>
-
-            <div className="the-content">
-              {React.cloneElement(routersEles, { key: location.pathname })}
+            <div className="layout-content__right">
+              <div className="the-bar"></div>
+              <div className="the-content">
+                {React.cloneElement(routersEles, { key: location.pathname })}
+              </div>
             </div>
           </div>
         </Paper>
