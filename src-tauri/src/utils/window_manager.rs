@@ -373,14 +373,11 @@ impl WindowManager {
                             .prefer_system_titlebar
                             .unwrap_or_default()
                     };
-                    println!("prefer_system_titlebar: {}", perfer_system_titlebar);
-                    if !perfer_system_titlebar {
-                        logging_error!(
-                            Type::Window,
-                            true,
-                            Self::prefer_system_titlebar(perfer_system_titlebar)
-                        );
-                    }
+                    logging_error!(
+                        Type::Window,
+                        true,
+                        Self::prefer_system_titlebar(perfer_system_titlebar)
+                    );
                     logging!(info, Type::Window, true, "新窗口创建成功");
                 }
                 Err(e) => {
