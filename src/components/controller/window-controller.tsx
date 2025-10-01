@@ -35,7 +35,11 @@ export function WindowControls() {
           <IconButton
             size="small"
             sx={{ fontSize: 14 }}
-            onClick={async () => await getCurrentWindow().toggleMaximize()}
+            onClick={async () =>
+              await getCurrentWindow().setFullscreen(
+                !(await currentWindow.isFullscreen()),
+              )
+            }
           >
             <CropSquare fontSize="inherit" color="inherit" />
           </IconButton>
@@ -52,7 +56,11 @@ export function WindowControls() {
           <IconButton
             size="small"
             sx={{ fontSize: 14 }}
-            onClick={async () => await getCurrentWindow().toggleMaximize()}
+            onClick={async () =>
+              await getCurrentWindow().setFullscreen(
+                !(await currentWindow.isFullscreen()),
+              )
+            }
           >
             <CropSquare fontSize="small" color="inherit" />
           </IconButton>
