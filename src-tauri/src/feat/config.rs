@@ -3,7 +3,7 @@ use crate::{
     core::{CoreManager, handle, hotkey, sysopt, tray},
     logging_error,
     module::lightweight,
-    utils::{logging::Type, window_manager::WindowManager},
+    utils::logging::Type,
 };
 use anyhow::Result;
 use serde_yaml_ng::Mapping;
@@ -65,7 +65,6 @@ enum UpdateFlags {
     SystrayTooltip = 1 << 8,
     SystrayClickBehavior = 1 << 9,
     LighteWeight = 1 << 10,
-    TitleBar = 1 << 11,
 }
 
 /// Patch Verge configuration
@@ -109,7 +108,6 @@ pub async fn patch_verge(patch: IVerge, not_save_file: bool) -> Result<()> {
     let home_cards = patch.home_cards.clone();
     let enable_auto_light_weight = patch.enable_auto_light_weight_mode;
     let enable_external_controller = patch.enable_external_controller;
-    let prefer_system_titlebar = patch.prefer_system_titlebar;
     let res: std::result::Result<(), anyhow::Error> = {
         // Initialize with no flags set
         let mut update_flags: i32 = UpdateFlags::None as i32;
@@ -185,10 +183,6 @@ pub async fn patch_verge(patch: IVerge, not_save_file: bool) -> Result<()> {
             update_flags |= UpdateFlags::RestartCore as i32;
         }
 
-        if prefer_system_titlebar.is_some() {
-            update_flags |= UpdateFlags::TitleBar as i32;
-        }
-
         // Process updates based on flags
         if (update_flags & (UpdateFlags::RestartCore as i32)) != 0 {
             Config::generate().await?;
@@ -231,9 +225,6 @@ pub async fn patch_verge(patch: IVerge, not_save_file: bool) -> Result<()> {
             } else {
                 lightweight::disable_auto_light_weight_mode();
             }
-        }
-        if (update_flags & (UpdateFlags::TitleBar as i32)) != 0 {
-            WindowManager::prefer_system_titlebar(prefer_system_titlebar.unwrap_or(false))?;
         }
 
         <Result<()>>::Ok(())

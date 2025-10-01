@@ -3,10 +3,16 @@ import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useLocalStorage } from "foxact/use-local-storage";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate, useRoutes } from "react-router-dom";
-import { SWRConfig, mutate } from "swr";
+import { mutate, SWRConfig } from "swr";
 
 import iconDark from "@/assets/image/icon_dark.svg?react";
 import iconLight from "@/assets/image/icon_light.svg?react";
@@ -17,6 +23,7 @@ import { UpdateButton } from "@/components/layout/update-button";
 import { useCustomTheme } from "@/components/layout/use-custom-theme";
 import { useI18n } from "@/hooks/use-i18n";
 import { useVerge } from "@/hooks/use-verge";
+import { useWindowControls } from "@/hooks/use-window-controls";
 import { getAxios } from "@/services/api";
 import { forceRefreshClashConfig } from "@/services/cmds";
 import { useEnableLog, useThemeMode } from "@/services/states";
@@ -39,6 +46,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { NoticeManager } from "@/components/base/NoticeManager";
 import { WindowControls } from "@/components/controller/window-controller";
 import { LogLevel } from "@/hooks/use-log-data";
+// 删除重复导入
 import { showNotice } from "@/services/noticeService";
 
 const appWindow = getCurrentWebviewWindow();
@@ -173,6 +181,20 @@ const Layout = () => {
   const { addListener } = useListen();
   const initRef = useRef(false);
   const [themeReady, setThemeReady] = useState(false);
+
+  const windowControls = useRef<any>(null);
+  const { decorated, toggleDecorations } = useWindowControls();
+
+  const customTitlebar = useMemo(() => {
+    if (!decorated) {
+      return (
+        <div className="the_titlebar" data-tauri-drag-region="true">
+          <WindowControls ref={windowControls} />
+        </div>
+      );
+    }
+    return null;
+  }, [decorated]);
 
   useEffect(() => {
     setThemeReady(true);
@@ -544,11 +566,8 @@ const Layout = () => {
               : {},
           ]}
         >
-          {verge?.prefer_system_titlebar ? null : (
-            <div className="the_titlebar" data-tauri-drag-region="true">
-              <WindowControls />
-            </div>
-          )}
+          {/* Custom titlebar - rendered only when decorated is false, memoized for performance */}
+          {customTitlebar}
 
           <div className="layout-content">
             <div className="layout-content__left">

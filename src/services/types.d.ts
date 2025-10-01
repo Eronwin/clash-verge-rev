@@ -792,7 +792,6 @@ interface IVergeConfig {
   start_page?: string;
   clash_core?: string;
   theme_mode?: "light" | "dark" | "system";
-  prefer_system_titlebar?: boolean;
   traffic_graph?: boolean;
   enable_memory_usage?: boolean;
   enable_group_icon?: boolean;

@@ -26,9 +26,6 @@ pub struct IVerge {
     /// `light` or `dark` or `system`
     pub theme_mode: Option<String>,
 
-    /// prefer system titlebar
-    pub prefer_system_titlebar: Option<bool>,
-
     /// tray click event
     pub tray_event: Option<String>,
 
@@ -364,7 +361,6 @@ impl IVerge {
             clash_core: Some("verge-mihomo".into()),
             language: Some(Self::get_system_language()),
             theme_mode: Some("system".into()),
-            prefer_system_titlebar: Some(true),
             #[cfg(not(target_os = "windows"))]
             env_type: Some("bash".into()),
             #[cfg(target_os = "windows")]
@@ -443,7 +439,6 @@ impl IVerge {
 
         patch!(language);
         patch!(theme_mode);
-        patch!(prefer_system_titlebar);
         patch!(tray_event);
         patch!(env_type);
         patch!(start_page);
@@ -544,7 +539,6 @@ pub struct IVergeResponse {
     pub app_log_max_count: Option<usize>,
     pub language: Option<String>,
     pub theme_mode: Option<String>,
-    pub prefer_system_titlebar: Option<bool>,
     pub tray_event: Option<String>,
     pub env_type: Option<String>,
     pub start_page: Option<String>,
@@ -618,7 +612,6 @@ impl From<IVerge> for IVergeResponse {
             app_log_max_count: verge.app_log_max_count,
             language: verge.language,
             theme_mode: verge.theme_mode,
-            prefer_system_titlebar: verge.prefer_system_titlebar,
             tray_event: verge.tray_event,
             env_type: verge.env_type,
             start_page: verge.start_page,

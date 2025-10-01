@@ -18,11 +18,11 @@ import { useTranslation } from "react-i18next";
 import { BaseDialog, DialogRef, Switch } from "@/components/base";
 import { TooltipIcon } from "@/components/base/base-tooltip-icon";
 import { useVerge } from "@/hooks/use-verge";
+// 由父组件传递decorated和toggleDecorations，不在此直接调用hook
+import { useWindowControls } from "@/hooks/use-window-controls";
 import { copyIconFile, getAppDir } from "@/services/cmds";
 import { showNotice } from "@/services/noticeService";
 import getSystem from "@/utils/get-system";
-
-import { useWindowControls } from "@/components/controller/window-controller";
 import { GuardState } from "./guard-state";
 
 const OS = getSystem();
@@ -39,6 +39,11 @@ const getIcons = async (icon_dir: string, name: string) => {
   };
 };
 
+interface LayoutViewerProps {
+  decorated: boolean | null;
+  toggleDecorations: () => Promise<void>;
+}
+
 export const LayoutViewer = forwardRef<DialogRef>((props, ref) => {
   const { t } = useTranslation();
   const { verge, patchVerge, mutateVerge } = useVerge();
@@ -47,6 +52,7 @@ export const LayoutViewer = forwardRef<DialogRef>((props, ref) => {
   const [commonIcon, setCommonIcon] = useState("");
   const [sysproxyIcon, setSysproxyIcon] = useState("");
   const [tunIcon, setTunIcon] = useState("");
+  const { decorated, toggleDecorations } = useWindowControls();
 
   useEffect(() => {
     initIconPath();
@@ -98,9 +104,6 @@ export const LayoutViewer = forwardRef<DialogRef>((props, ref) => {
     mutateVerge({ ...verge, ...patch }, false);
   };
 
-  const { decorated, toggleDecorations, refreshDecorated } =
-    useWindowControls();
-
   return (
     <BaseDialog
       open={open}
@@ -115,13 +118,12 @@ export const LayoutViewer = forwardRef<DialogRef>((props, ref) => {
         <Item>
           <ListItemText primary={t("Prefer System Titlebar")} />
           <GuardState
-            value={!!decorated}
+            value={decorated}
             valueProps="checked"
             onCatch={onError}
             onFormat={onSwitchFormat}
             onChange={async (e) => {
               await toggleDecorations();
-              await refreshDecorated();
             }}
           >
             <Switch edge="end" />

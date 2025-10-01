@@ -1,47 +1,8 @@
+import { useWindowControls } from "@/hooks/use-window-controls";
 import getSystem from "@/utils/get-system";
 import { Close, CropSquare, Minimize } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
-import { getCurrentWindow } from "@tauri-apps/api/window";
-import React, { forwardRef, useEffect, useImperativeHandle } from "react";
-
-export function useWindowControls() {
-  const currentWindow = getCurrentWindow();
-
-  const minimize = () => currentWindow.minimize();
-  const close = () => currentWindow.close();
-  const toggleFullscreen = async () => {
-    await currentWindow.setFullscreen(!(await currentWindow.isFullscreen()));
-  };
-
-  const [decorated, setDecorated] = React.useState<boolean | null>(null);
-
-  const refreshDecorated = async () => {
-    const val = await currentWindow.isDecorated();
-    setDecorated(val);
-    return val;
-  };
-
-  const toggleDecorations = async () => {
-    const val = await refreshDecorated();
-    await currentWindow.setDecorations(!val);
-    setDecorated(!val);
-  };
-
-  useEffect(() => {
-    refreshDecorated();
-    currentWindow.setMinimizable?.(true);
-  }, [currentWindow]);
-
-  return {
-    currentWindow,
-    minimize,
-    close,
-    toggleFullscreen,
-    toggleDecorations,
-    decorated,
-    refreshDecorated,
-  };
-}
+import { forwardRef, useImperativeHandle } from "react";
 
 export const WindowControls = forwardRef(function WindowControls(props, ref) {
   const OS = getSystem();
