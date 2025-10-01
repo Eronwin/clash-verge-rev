@@ -22,6 +22,7 @@ import { copyIconFile, getAppDir } from "@/services/cmds";
 import { showNotice } from "@/services/noticeService";
 import getSystem from "@/utils/get-system";
 
+import { useWindowControls } from "@/components/controller/window-controller";
 import { GuardState } from "./guard-state";
 
 const OS = getSystem();
@@ -97,6 +98,9 @@ export const LayoutViewer = forwardRef<DialogRef>((props, ref) => {
     mutateVerge({ ...verge, ...patch }, false);
   };
 
+  const { decorated, toggleDecorations, refreshDecorated } =
+    useWindowControls();
+
   return (
     <BaseDialog
       open={open}
@@ -111,12 +115,14 @@ export const LayoutViewer = forwardRef<DialogRef>((props, ref) => {
         <Item>
           <ListItemText primary={t("Prefer System Titlebar")} />
           <GuardState
-            value={verge?.prefer_system_titlebar ?? true}
+            value={!!decorated}
             valueProps="checked"
             onCatch={onError}
             onFormat={onSwitchFormat}
-            onChange={(e) => onChangeData({ prefer_system_titlebar: e })}
-            onGuard={(e) => patchVerge({ prefer_system_titlebar: e })}
+            onChange={async (e) => {
+              await toggleDecorations();
+              await refreshDecorated();
+            }}
           >
             <Switch edge="end" />
           </GuardState>
