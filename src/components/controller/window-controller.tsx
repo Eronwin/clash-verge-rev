@@ -1,4 +1,4 @@
-import { useWindowControls } from "@/hooks/use-window-controls";
+import { useWindowControls } from "@/hooks/use-window";
 import getSystem from "@/utils/get-system";
 import { Close, CropSquare, Minimize } from "@mui/icons-material";
 import { IconButton } from "@mui/material";

@@ -18,8 +18,7 @@ import { useTranslation } from "react-i18next";
 import { BaseDialog, DialogRef, Switch } from "@/components/base";
 import { TooltipIcon } from "@/components/base/base-tooltip-icon";
 import { useVerge } from "@/hooks/use-verge";
-// 由父组件传递decorated和toggleDecorations，不在此直接调用hook
-import { useWindowControls } from "@/hooks/use-window-controls";
+import { useWindowDecorations } from "@/hooks/use-window";
 import { copyIconFile, getAppDir } from "@/services/cmds";
 import { showNotice } from "@/services/noticeService";
 import getSystem from "@/utils/get-system";
@@ -39,11 +38,6 @@ const getIcons = async (icon_dir: string, name: string) => {
   };
 };
 
-interface LayoutViewerProps {
-  decorated: boolean | null;
-  toggleDecorations: () => Promise<void>;
-}
-
 export const LayoutViewer = forwardRef<DialogRef>((props, ref) => {
   const { t } = useTranslation();
   const { verge, patchVerge, mutateVerge } = useVerge();
@@ -52,7 +46,8 @@ export const LayoutViewer = forwardRef<DialogRef>((props, ref) => {
   const [commonIcon, setCommonIcon] = useState("");
   const [sysproxyIcon, setSysproxyIcon] = useState("");
   const [tunIcon, setTunIcon] = useState("");
-  const { decorated, toggleDecorations } = useWindowControls();
+
+  const { decorated, toggleDecorations } = useWindowDecorations();
 
   useEffect(() => {
     initIconPath();

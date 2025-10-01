@@ -23,7 +23,7 @@ import { UpdateButton } from "@/components/layout/update-button";
 import { useCustomTheme } from "@/components/layout/use-custom-theme";
 import { useI18n } from "@/hooks/use-i18n";
 import { useVerge } from "@/hooks/use-verge";
-import { useWindowControls } from "@/hooks/use-window-controls";
+import { useWindowDecorations } from "@/hooks/use-window";
 import { getAxios } from "@/services/api";
 import { forceRefreshClashConfig } from "@/services/cmds";
 import { useEnableLog, useThemeMode } from "@/services/states";
@@ -183,9 +183,15 @@ const Layout = () => {
   const [themeReady, setThemeReady] = useState(false);
 
   const windowControls = useRef<any>(null);
-  const { decorated, toggleDecorations } = useWindowControls();
+  const { decorated } = useWindowDecorations();
 
   const customTitlebar = useMemo(() => {
+    console.debug(
+      "[Layout] Titlebar rendering - decorated:",
+      decorated,
+      "| showing:",
+      !decorated,
+    );
     if (!decorated) {
       return (
         <div className="the_titlebar" data-tauri-drag-region="true">
